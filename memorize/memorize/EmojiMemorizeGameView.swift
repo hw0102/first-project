@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  EmojiMemorizeGameView.swift
 //  memorize
 //
 //  Created by Hello World on 1/7/24.
@@ -7,7 +7,9 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct EmojiMemorizeGameView: View {
+    // link to view model
+    var viewModel: EmojiMemorizeGame
     
     // Extra expliit. Can use type inference.
     let emojis: Array<String> = ["🚜","🩼","🚡","🚃","🚘"]
@@ -83,5 +85,5 @@ struct CardView: View {
     }
 }
 #Preview {
-    ContentView()
+    EmojiMemorizeGameView(viewModel: EmojiMemorizeGame())
 }
