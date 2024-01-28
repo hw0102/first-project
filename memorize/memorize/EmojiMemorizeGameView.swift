@@ -21,6 +21,7 @@ struct EmojiMemorizeGameView: View {
             Button("Shuffle"){
                 // this is a user intent. View Models translate user intents to backend actions
                 viewModel.shuffle()
+                print(viewModel.cards)
             }
         // cardAdjuster
         }
@@ -39,10 +40,19 @@ struct EmojiMemorizeGameView: View {
     
     var cards: some View{
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 85), spacing: 0)], spacing: 0){
-            ForEach(viewModel.cards.indices, id: \.self){ index in
-                CardView(viewModel.cards[index])
-                    .aspectRatio(2/3, contentMode: .fit)
-                    .padding(4)
+            
+            // id: is selecting a unique property (in this case itself) that identifies an instance
+            ForEach(viewModel.cards){ card in
+               // VStack{
+                    CardView(card)
+                        .aspectRatio(2/3, contentMode: .fit)
+                        .padding(4)
+                        .onTapGesture {
+                            viewModel.choose(card)
+                        }
+                    //Text(card.id)
+               // }
+                
             }
             .foregroundStyle(Color.orange) // apply to all unspecified foregroundstyles
         }
@@ -86,7 +96,9 @@ struct CardView: View {
             
             base.fill().opacity(card.isFaceUp ? 0 : 1)
             
-        }//.onTapGesture {
+        }
+        .opacity(card.isFaceUp || !card.isMatched ? 1 : 0)
+        //.onTapGesture {
            // print("tapped") // to remove
             //card.isFaceUp.toggle()
             // isFaceUp.toggle()

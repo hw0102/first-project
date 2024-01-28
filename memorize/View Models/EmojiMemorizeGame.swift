@@ -52,6 +52,6 @@ class EmojiMemorizeGame: ObservableObject {
     
     // _ because it's always clear to caller that argument is a card
     func choose(_ card: MemorizeGame<String>.Card){
-    model.choose(card)
+        model.choose(card)
     }
 }
