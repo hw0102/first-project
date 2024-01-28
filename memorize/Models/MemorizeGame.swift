@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct MemorizeGame<CardContent> {
+struct MemorizeGame<CardContent> where CardContent: Equatable {
     private(set) var cards: Array<Card>
     
     init(numberOfPairsOfCards: Int, cardContentFactory: (Int) -> CardContent) {
@@ -21,12 +21,22 @@ struct MemorizeGame<CardContent> {
         }
     }
     
+    mutating func shuffle(){
+        cards.shuffle()
+    }
+    
     func choose (_ card: Card){
         
     }
     
-    struct Card{
-        var isFaceUp: Bool = false // default to false
+    struct Card: Equatable{
+        // MARK: you don't need to specify the following function
+//        static func == (lhs: Card, rhs: Card) -> Bool {
+//            return lhs.isFaceUp == rhs.isFaceUp &&
+//            lhs.isMatched == rhs.isMatched && lhs.content == rhs.content
+//        }
+        
+        var isFaceUp: Bool = true // default to false
         var isMatched: Bool = false // default to false
         let content: CardContent // don't need content to change
     }

@@ -7,13 +7,13 @@
 
 import SwiftUI
 
-class EmojiMemorizeGame {
+class EmojiMemorizeGame: ObservableObject {
     
-    private static let emojis = ["🚜","🩼","🚡","🚃","🚘"]
+    private static let emojis = ["🚜","🩼","🚡","🚃","🚘","💾"]
     
     // this is for a Memorize Game based on string
     private static func createMemoryGame() -> MemorizeGame<String> {
-        return MemorizeGame<String>(numberOfPairsOfCards: 4){ pairIndex in // <string> is optional. You can call the arguments (in order) whatever you want
+        return MemorizeGame<String>(numberOfPairsOfCards: 10){ pairIndex in // <string> is optional. You can call the arguments (in order) whatever you want
             if emojis.indices.contains(pairIndex){
                 return emojis[pairIndex]
             }
@@ -23,7 +23,8 @@ class EmojiMemorizeGame {
         }
     }
     
-    private var model = createMemoryGame()
+    @Published private var model = createMemoryGame()
+    
     // link back to model
 //    private var model = MemorizeGame<String>(numberOfPairsOfCards: 4){ pairIndex in // <string> is optional. You can call the arguments (in order) whatever you want
 //        return emojis[pairIndex]
@@ -36,6 +37,17 @@ class EmojiMemorizeGame {
     
     var cards: Array<MemorizeGame<String>.Card> {
         return model.cards
+    }
+    
+    // FIXME: App is great
+
+    
+    // TODO: App is amazing
+    
+    // MARK: - Intents
+    
+    func shuffle(){
+        model.shuffle()
     }
     
     // _ because it's always clear to caller that argument is a card
