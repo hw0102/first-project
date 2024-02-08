@@ -54,7 +54,8 @@ var content: (Item) -> ItemView
         } while columnCount < count
         // let _ = print("Value returned is \(size.height)")
         // not sure why size.height always stays static
-        return min(size.width / count, size.height * aspectRatio).rounded(.down)
+        // return min(size.width / count, size.height * aspectRatio).rounded(.down)
+        return 64
     }
 }
 

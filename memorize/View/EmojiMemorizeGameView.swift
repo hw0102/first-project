@@ -22,6 +22,9 @@ struct EmojiMemorizeGameView: View {
             Spacer()
             Button("Shuffle"){
                 // this is a user intent. View Models translate user intents to backend actions
+                
+                
+                
                 viewModel.shuffle()
                 print(viewModel.cards)
             }
@@ -62,36 +65,7 @@ struct EmojiMemorizeGameView: View {
 //        cardCountAdjuster(by: -1, symbol: "rectangle.stack.badge.minus.fill")
 //    }
 
-struct CardView: View {
-    let card: MemorizeGame<String>.Card
-    
-    init(_ card: MemorizeGame<String>.Card) {
-        self.card = card
-    }
-    
-    var body: some View {
-        ZStack{
-            let base = RoundedRectangle(cornerRadius: 12)
-            Group{
-                base.fill(.white)
-                base.strokeBorder(lineWidth: 2)
-                Text(card.content)
-                    .font(.system(size: 100))
-                    .minimumScaleFactor(0.01)
-                    .aspectRatio(1, contentMode:.fit)
-            }.opacity(card.isFaceUp ? 1:0)
-            
-            base.fill().opacity(card.isFaceUp ? 0 : 1)
-            
-        }
-        .opacity(card.isFaceUp || !card.isMatched ? 1 : 0)
-        //.onTapGesture {
-           // print("tapped") // to remove
-            //card.isFaceUp.toggle()
-            // isFaceUp.toggle()
-        // }
-    }
-}
+
 #Preview {
     EmojiMemorizeGameView(viewModel: EmojiMemorizeGame())
 }

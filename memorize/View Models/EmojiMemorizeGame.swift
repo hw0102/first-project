@@ -13,7 +13,7 @@ class EmojiMemorizeGame: ObservableObject {
     
     // this is for a Memorize Game based on string
     private static func createMemoryGame() -> MemorizeGame<String> {
-        return MemorizeGame<String>(numberOfPairsOfCards: 4){ pairIndex in // <string> is optional. You can call the arguments (in order) whatever you want
+        return MemorizeGame<String>(numberOfPairsOfCards: 10){ pairIndex in // <string> is optional. You can call the arguments (in order) whatever you want
             if emojis.indices.contains(pairIndex){
                 return emojis[pairIndex]
             }

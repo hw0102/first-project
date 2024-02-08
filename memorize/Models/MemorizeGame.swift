@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct MemorizeGame<CardContent> where CardContent: Equatable {
+struct MemorizeGame<CardContent: Equatable> {
     private(set) var cards: Array<Card>
     
     init(numberOfPairsOfCards: Int, cardContentFactory: (Int) -> CardContent) {
