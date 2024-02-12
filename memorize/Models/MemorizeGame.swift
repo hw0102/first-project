@@ -9,6 +9,7 @@ import Foundation
 
 struct MemorizeGame<CardContent: Equatable> {
     private(set) var cards: Array<Card>
+    private(set) var score = 0
     
     init(numberOfPairsOfCards: Int, cardContentFactory: (Int) -> CardContent) {
         cards = []
@@ -45,6 +46,15 @@ struct MemorizeGame<CardContent: Equatable> {
                     if cards[chosenIndex].content == cards[potentialMatchIndex].content {
                         cards[chosenIndex].isMatched = true
                         cards[potentialMatchIndex].isMatched = true
+                        score += 2
+                    }
+                    else {
+                        if cards[chosenIndex].hasBeenSeen {
+                            score -= 1
+                        }
+                        if cards[potentialMatchIndex].hasBeenSeen {
+                            score -= 1
+                        }
                     }
                 } else {
                     indexOfTheOneAndOnlyFaceUpCard = chosenIndex
@@ -77,7 +87,14 @@ struct MemorizeGame<CardContent: Equatable> {
 //            lhs.isMatched == rhs.isMatched && lhs.content == rhs.content
 //        }
         
-        var isFaceUp: Bool = false // default to false
+        var isFaceUp: Bool = false {
+            didSet {
+                if oldValue && !isFaceUp {
+                    hasBeenSeen = true
+                }
+            }
+        } // default to false
+        var hasBeenSeen = false
         var isMatched: Bool = false // default to false
         let content: CardContent // don't need content to change
         var id: String
