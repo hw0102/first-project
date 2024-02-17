@@ -10,7 +10,7 @@ import SwiftUI
 class EmojiArtDocument: ObservableObject {
     typealias Emoji = EmojiArt.Emoji
     
-    private var emojiArt = EmojiArt()
+    @Published private var emojiArt = EmojiArt()
     
     init() {
         emojiArt.addEmoji("🍞", at: .init(x: -200, y: -150), size: 200)
@@ -22,7 +22,7 @@ class EmojiArtDocument: ObservableObject {
     }
     
     var background: URL? {
-        emojiArt.background
+        return emojiArt.background
     }
     
     // MARK: Intent(s)

@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct EmojiArtDocumentView: View {
+    typealias Emoji = EmojiArt.Emoji
+    
     @ObservedObject var document: EmojiArtDocument
     
     private let paletteEmojiSize: CGFloat = 40
@@ -26,16 +28,36 @@ struct EmojiArtDocumentView: View {
         GeometryReader { geometry in
             ZStack {
                 Color.white
-                
-                ForEach(document.emojis) { emoji in
-                    Text(emoji.string)
-                        .font(emoji.font)
-                        .position(emoji.position.in(geometry))
-                }
+                documentContents(in: geometry)
+                    .scaleEffect(zoom)
+                    .offset(pan)
+            }
+            .dropDestination(for: URL.self) {urls, location in
+                return drop(urls, at: location, in: geometry)
             }
         }
     }
     
+    @State private var zoom: CGFloat = 1 // How much it is zoomed
+    @State private var pan: CGSize = .zero
+    
+    @ViewBuilder
+    private func documentContents(in geometry: GeometryProxy) -> some View {
+        AsyncImage(url: document.background)
+            .position(Emoji.Position.zero.in(geometry))
+        ForEach(document.emojis) { emoji in
+            Text(emoji.string)
+                .font(emoji.font)
+                .position(emoji.position.in(geometry))
+        }
+    }
+    private func drop(_ urls: [URL], at location: CGPoint, in geometry: GeometryProxy) -> Bool {
+        if let url = urls.first {
+            document.setBackground(url)
+            return true
+        }
+        return false
+    }
 }
 
 struct ScrollingEmojis: View{
@@ -50,6 +72,7 @@ struct ScrollingEmojis: View{
             HStack {
                 ForEach(emojis, id: \.self) { emoji in
                     Text(emoji)
+                        .draggable(emoji)
                 }
             }
         }

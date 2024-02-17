@@ -30,6 +30,8 @@ struct EmojiArt {
         
         struct Position {
             var x, y : Int
+            
+            static let zero = Position(x: 0, y: 0)
         }
     }
     
