@@ -17,7 +17,7 @@ struct EmojiArtDocumentView: View {
     var body: some View {
         VStack(spacing: 0) {
             documentBody
-            ScrollingEmojis(emojis)
+            PaletteChooser()
                 .font(.system(size: paletteEmojiSize))
                 .padding(.horizontal)
         }
@@ -29,17 +29,41 @@ struct EmojiArtDocumentView: View {
             ZStack {
                 Color.white
                 documentContents(in: geometry)
-                    .scaleEffect(zoom)
-                    .offset(pan)
+                    .scaleEffect(zoom * gestureZoom) // this is for zoom
+                    .offset(pan + gesturePan) // this is for pan
             }
+            .gesture(zoomGesture.simultaneously(with: panGesture))
             .dropDestination(for: URL.self) {urls, location in
                 return drop(urls, at: location, in: geometry)
             }
         }
     }
     
+    private var panGesture: some Gesture {
+        DragGesture()
+            .updating($gesturePan) { value, gesturePan, _ in
+                gesturePan = value.translation
+            }
+            .onEnded{ endValue in
+                pan += endValue.translation
+            }
+    }
+    
+    private var zoomGesture: some Gesture {
+        MagnificationGesture() // what is the difference between this and magnifyGesture?
+            .updating($gestureZoom) { inMotionPinchScale, gestureZoom, _ in // how do I know it would give three parameters for me to use?
+                gestureZoom = inMotionPinchScale
+            }
+            .onEnded { endingPinchScale in
+                zoom *= endingPinchScale
+            }
+    }
+    
     @State private var zoom: CGFloat = 1 // How much it is zoomed
     @State private var pan: CGSize = .zero
+    
+    @GestureState private var gestureZoom: CGFloat = 1
+    @GestureState private var gesturePan: CGSize = .zero
     
     @ViewBuilder
     private func documentContents(in geometry: GeometryProxy) -> some View {
@@ -58,24 +82,26 @@ struct EmojiArtDocumentView: View {
         }
         return false
     }
+    
+    // Help translate between dropped and zoomed/panned coordinates
+    private func emojiPosition(at location: CGPoint, in geometry: GeometryProxy) -> Emoji.Position {
+        let center = geometry.frame(in: .local).center
+        return Emoji.Position(
+            x: Int((location.x - center.x - pan.width) / zoom),
+            y: Int(-(location.y - center.y - pan.height) / zoom)
+        )
+    }
 }
 
-struct ScrollingEmojis: View{
-    let emojis : [String]
-    
-    init(_ emojis: String) {
-        self.emojis = emojis.uniqued.map(String.init)
+
+
+extension CGSize {
+    static func +(lhs: CGSize, rhs: CGSize) -> CGSize {
+        CGSize(width: lhs.width + rhs.width, height: lhs.height + rhs.height)
     }
     
-    var body: some View {
-        ScrollView(.horizontal) {
-            HStack {
-                ForEach(emojis, id: \.self) { emoji in
-                    Text(emoji)
-                        .draggable(emoji)
-                }
-            }
-        }
+    static func +=(lhs: inout CGSize, rhs: CGSize) {
+        lhs = lhs + rhs
     }
 }
 
